@@ -21,8 +21,9 @@ String parametro;
 String id_number;
 
 int status = 11;
-int batery = 0;
+int batery = 100;
 int rele = 27;
+int aviso = 15;
 int feedback = 15;
 
 void setup()
@@ -64,9 +65,11 @@ void setup()
 
       if(id_number == "status"){
         status = atoi(parametro.c_str());
+         Serial.printf("Status atual: %\n", status);
       }
       if(id_number == "batery"){
         batery = atoi(parametro.c_str());
+        Serial.printf("Nivel bateria: %i\n", batery);
       }
     }request->send(200, "text/plain", "Success, setpoint"); });
  
@@ -76,23 +79,24 @@ void setup()
 
 void loop()
 {
-  Serial.printf("%i", batery);
 
 if(status == 10){
-    digitalWrite(rele, 0);
-}
-else if(status == 33) {
   digitalWrite(rele, 1);
 }
 else if(status == 11) {
-  digitalWrite(rele, 1);
+  digitalWrite(rele, 0);
 }
 else if(status == 32){
-    digitalWrite(rele, 0);
-} else {
+    digitalWrite(rele, 1);
+} 
+else if(status == 33) {
+  digitalWrite(rele, 0);
+}
+else {
   digitalWrite(rele, 1);
 }
-
-
-  delay(1000);
+if(batery < 80 && (status == 10 || status == 32) ) {
+  digitalWrite(aviso, 1);
+} else {digitalWrite(aviso, 0);}
+  delay(500);
 }
